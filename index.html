@@ -31,34 +31,44 @@
   <main class="content-container">
 
     <!-- Layer 1: Core / Profile -->
-    <section id="hero" class="layer active">
-      <div class="hero-content">
-        <div class="cyber-badge">SYSTEM ACTIVE // ONLINE</div>
-        <h1 class="hero-title">SAMITH <br><span class="highlight">SHIVAKUMAR</span></h1>
-        <p class="hero-sub">AI & Machine Learning Undergraduate specializing in computer vision, generative AI, automation, and full-stack intelligent systems.</p>
-        
-        <div class="contact-strip">
-          <span>📍 Bengaluru, India</span>
-          <span>📞 +91 7204979748</span>
-          <span>✉️ samithshivakumar1@gmail.com</span>
+    <!-- Layer 1: Core / Profile Section -->
+<section id="hero" class="layer active">
+  <div class="hero-wrapper">
+    
+    <!-- Profile Visual / Uploader (Centered Top / Left) -->
+    <div class="hero-visual">
+      <div class="profile-card">
+        <div class="hud-ring-outer"></div>
+        <div class="avatar-container" onclick="document.getElementById('photo-upload').click()">
+          <img id="avatar-img" src="https://via.placeholder.com/300/0f1117/00f0ff?text=UPLOAD+PHOTO" alt="Samith Shivakumar Profile">
+          <div class="avatar-overlay">⚡ CLICK TO UPLOAD PHOTO</div>
         </div>
+        <input type="file" id="photo-upload" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
+      </div>
+    </div>
 
-        <div class="hero-actions">
-          <button class="cta-btn primary" onclick="switchLayer('projects', event)">View Projects</button>
-          <button class="cta-btn secondary" onclick="switchLayer('experience', event)">Experience</button>
-        </div>
+    <!-- Main Content Info -->
+    <div class="hero-content">
+      <div class="cyber-badge"><span>●</span> SYSTEM ONLINE // AI ENGINEER</div>
+      <h1 class="hero-title">SAMITH <br><span class="highlight">SHIVAKUMAR</span></h1>
+      <p class="hero-sub">AI & Machine Learning Specialist building end-to-end computer vision pipelines, LLM-powered automation, and high-performance intelligent interfaces[cite: 1].</p>
+      
+      <!-- Interactive Contact Tags -->
+      <div class="contact-strip">
+        <div class="contact-pill"><span class="pill-icon">📍</span> Bengaluru, India</div>
+        <div class="contact-pill"><span class="pill-icon">📞</span> +91 7204979748</div>
+        <div class="contact-pill"><span class="pill-icon">✉️</span> samithshivakumar1@gmail.com</div>
       </div>
 
-      <div class="hero-visual">
-        <div class="profile-card">
-          <div class="avatar-container" onclick="document.getElementById('photo-upload').click()">
-            <img id="avatar-img" src="C:\Users\ASUS TUF GAMING\Downloads\Samith ProfileIMage.png" alt="Samith Shivakumar Profile">
-            <div class="avatar-overlay">⚡ CLICK TO UPLOAD PHOTO</div>
-          </div>
-          <input type="file" id="photo-upload" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
-        </div>
+      <!-- Action Buttons -->
+      <div class="hero-actions">
+        <button class="cta-btn primary" onclick="switchLayer('projects', event)">Explore Projects</button>
+        <button class="cta-btn secondary" onclick="switchLayer('experience', event)">View Experience</button>
       </div>
-    </section>
+    </div>
+
+  </div>
+</section>
 
     <!-- Layer 2: Experience -->
 <!-- Layer 2: Experience Timeline with Expandable Cards -->
