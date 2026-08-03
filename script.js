@@ -508,3 +508,111 @@ function initCyberCursor() {
 
 // Initialize on DOM load
 document.addEventListener('DOMContentLoaded', initCyberCursor);
+// Web Audio API Synthesizer Engine (Zero-load audio generation)
+// Web Audio API Synthesizer Engine (Browser-Autoplay Compliant)
+let audioCtx = null;
+let sfxEnabled = true;
+
+// Initialize or resume AudioContext safely on user interaction
+function getAudioContext() {
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) {
+      audioCtx = new AudioContextClass();
+    }
+  }
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
+
+function toggleSFX() {
+  // Ensure AudioContext is active on button press
+  const ctx = getAudioContext();
+  
+  sfxEnabled = !sfxEnabled;
+  const icon = document.getElementById('sfx-icon');
+  const btn = document.getElementById('sfx-toggle');
+
+  if (sfxEnabled) {
+    if (icon) icon.textContent = '🔊 SFX: ON';
+    if (btn) btn.classList.remove('disabled');
+    playSFX('success');
+  } else {
+    if (icon) icon.textContent = '🔇 SFX: OFF';
+    if (btn) btn.classList.add('disabled');
+  }
+}
+
+// Play synthetic cyber sound effects
+function playSFX(type) {
+  if (!sfxEnabled) return;
+  
+  const ctx = getAudioContext();
+  if (!ctx || ctx.state !== 'running') return; // Don't attempt if still suspended
+
+  try {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    const now = ctx.currentTime;
+
+    if (type === 'hover') {
+      // High-pitched cyber blip
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(900, now);
+      osc.frequency.exponentialRampToValueAtTime(1400, now + 0.05);
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+      osc.start(now);
+      osc.stop(now + 0.05);
+    } else if (type === 'click') {
+      // Crisp mechanical UI tick
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(500, now);
+      osc.frequency.exponentialRampToValueAtTime(150, now + 0.08);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+      osc.start(now);
+      osc.stop(now + 0.08);
+    } else if (type === 'success') {
+      // Dual chime for toggle ON
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, now); // C5
+      osc.frequency.setValueAtTime(659.25, now + 0.06); // E5
+      gain.gain.setValueAtTime(0.06, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+      osc.start(now);
+      osc.stop(now + 0.18);
+    }
+  } catch (e) {
+    console.warn("SFX Execution blocked:", e);
+  }
+}
+
+// Unlock audio context on ANY first click on the page
+window.addEventListener('click', () => {
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+}, { once: true });
+
+// UI Event Listeners for Hover and Click SFX
+document.addEventListener('DOMContentLoaded', () => {
+  const interactiveSelector = '.nav-btn, .project-card, .cta-btn, .filter-btn, .theme-btn, .contact-pill, .sfx-btn';
+  
+  document.addEventListener('mouseover', (e) => {
+    if (e.target.closest(interactiveSelector)) {
+      playSFX('hover');
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (e.target.closest(interactiveSelector)) {
+      playSFX('click');
+    }
+  });
+});

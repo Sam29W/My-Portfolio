@@ -867,3 +867,18 @@ a, button, input, textarea, select, [role="button"] {
     display: none !important;
   }
 }
+/* SFX Toggle Button Styling */
+.sfx-btn {
+  font-family: monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  color: var(--accent, #00f0ff);
+  border-color: rgba(0, 240, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.sfx-btn.disabled {
+  color: var(--text-sub, #8a99ad);
+  border-color: var(--border, rgba(255, 255, 255, 0.1));
+  opacity: 0.6;
+}
