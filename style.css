@@ -472,3 +472,279 @@ body {
 .pill-icon {
   font-size: 1.1rem;
 }
+/* Cyber Command Palette HUD */
+.cmd-trigger-btn {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--accent);
+  border-color: var(--border);
+}
+
+.cmd-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(4, 6, 10, 0.85);
+  backdrop-filter: blur(10px);
+  z-index: 3000;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 10vh;
+}
+
+.cmd-overlay.active {
+  display: flex;
+}
+
+.cmd-box {
+  background: var(--bg-primary);
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 35px var(--accent-glow);
+  border-radius: 8px;
+  width: 90%;
+  max-width: 650px;
+  overflow: hidden;
+  font-family: monospace;
+}
+
+.cmd-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1.2rem;
+  background: rgba(0, 240, 255, 0.08);
+  border-bottom: 1px solid var(--border);
+}
+
+.cmd-badge {
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.cmd-close {
+  color: var(--text-sub);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.cmd-input-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.cmd-prompt {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-right: 0.8rem;
+}
+
+#cmd-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-main);
+  font-family: monospace;
+  font-size: 1rem;
+}
+
+.cmd-output-container {
+  padding: 1.2rem;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.cmd-output {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--text-sub);
+}
+
+.cmd-output .cmd-res {
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.cmd-hint {
+  color: var(--text-sub);
+  opacity: 0.8;
+}
+
+kbd {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  color: var(--accent);
+}
+
+/* Neural Optimizer Mini-Game Styling */
+.game-trigger-btn {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: #00f0ff;
+  border-color: rgba(0, 240, 255, 0.3);
+}
+
+.game-modal-box {
+  max-width: 680px;
+  width: 92%;
+}
+
+.game-hud-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  margin: 1rem 0;
+  align-items: center;
+}
+
+.game-canvas-wrapper {
+  position: relative;
+  background: rgba(5, 7, 10, 0.95);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+#neural-canvas {
+  display: block;
+  width: 100%;
+  height: 180px;
+}
+
+.game-status-overlay {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  justify-content: space-between;
+  font-family: monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+}
+
+.game-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--text-sub);
+}
+
+.control-group input[type="range"] {
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.game-results-banner {
+  margin-top: 0.8rem;
+  padding: 0.6rem;
+  background: rgba(0, 240, 255, 0.05);
+  border: 1px dashed var(--border);
+  color: var(--text-main);
+  font-family: monospace;
+  font-size: 0.82rem;
+  text-align: center;
+  border-radius: 4px;
+}
+
+@media (max-width: 600px) {
+  .game-hud-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* Projects Section Header & Control Panel Enhancement */
+.projects-header-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.project-metrics-bar {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.metric-chip {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.75rem;
+}
+
+.metric-chip .m-label {
+  color: var(--text-sub);
+  display: block;
+  font-size: 0.65rem;
+  margin-bottom: 0.1rem;
+}
+
+.metric-chip .m-val {
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.metric-chip .status-live {
+  color: #00ff88;
+}
+
+.projects-control-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.project-search-box {
+  display: flex;
+  align-items: center;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  width: 280px;
+}
+
+.project-search-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-main);
+  font-size: 0.85rem;
+  width: 100%;
+  margin-left: 0.5rem;
+}
+
+.project-search-box input::placeholder {
+  color: var(--text-sub);
+}

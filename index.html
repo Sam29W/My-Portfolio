@@ -14,6 +14,9 @@
 
   <!-- Navbar -->
   <nav class="navbar">
+    <button class="nav-btn cmd-trigger-btn" onclick="openCmdPalette()">
+  <span>[ ⌘ / CTRL + K ]</span>
+</button>
     <div class="logo">SAMITH // OS</div>
     <div class="nav-links">
       <button class="nav-btn active" onclick="switchLayer('hero', event)">Core</button>
@@ -181,122 +184,149 @@
 </section>
 
     <!-- Layer 3: Featured Projects -->
-    <section id="projects" class="layer">
-      <h2 class="layer-title">FEATURED DEPLOYMENTS // <span>PROJECT REPOSITORY</span></h2>
-
-      <div class="filter-controls">
-        <button class="filter-btn active" onclick="filterProjects('all', event)">ALL SYSTEM UNITS</button>
-        <button class="filter-btn" onclick="filterProjects('vision', event)">VISION & AI</button>
-        <button class="filter-btn" onclick="filterProjects('automation', event)">AUTOMATION</button>
-        <button class="filter-btn" onclick="filterProjects('iot', event)">EMBEDDED / IOT</button>
+    <!-- Layer 3: Featured Projects -->
+<section id="projects" class="layer">
+  <div class="projects-header-block">
+    <h2 class="layer-title">FEATURED DEPLOYMENTS // <span>PROJECT REPOSITORY</span></h2>
+    
+    <!-- System Telemetry Metrics Bar -->
+    <div class="project-metrics-bar">
+      <div class="metric-chip">
+        <span class="m-label">TOTAL UNITS</span>
+        <span class="m-val highlight" id="project-count-display">4 ACTIVE</span>
       </div>
+      <div class="metric-chip">
+        <span class="m-label">LATENCY BENCHMARK</span>
+        <span class="m-val">&lt; 45ms</span>
+      </div>
+      <div class="metric-chip">
+        <span class="m-label">DEPLOYMENT STATUS</span>
+        <span class="m-val status-live">● 100% OPERATIONAL</span>
+      </div>
+    </div>
+  </div>
 
-      <div class="projects-layout">
-        <div class="projects-grid">
+  <!-- Filter & Quick Search Controls -->
+  <div class="projects-control-panel">
+    <div class="filter-controls">
+      <button class="filter-btn active" onclick="filterProjects('all', event)">ALL SYSTEM UNITS</button>
+      <button class="filter-btn" onclick="filterProjects('vision', event)">VISION & AI</button>
+      <button class="filter-btn" onclick="filterProjects('automation', event)">AUTOMATION</button>
+      <button class="filter-btn" onclick="filterProjects('iot', event)">EMBEDDED / IOT</button>
+    </div>
 
-          <div class="cyber-card project-card" data-category="vision" onclick="openTelemetryModal('YOLOv8 Real-Time Object Detection Engine', 'Computer Vision / PyTorch', 'Hugging Face Spaces', '120 FPS / TensorRT', 'https://huggingface.co/spaces', 'Developed a real-time object detection system using YOLOv8 and deployed it on Hugging Face Spaces for interactive inference.')">
-            <div class="card-header-flex">
-              <span class="card-tag">COMPUTER VISION</span>
-              <span class="status-badge live">● DEPLOYED</span>
-            </div>
-            <h3>YOLOv8 Real-Time Object Detection</h3>
-            <p class="project-desc">Real-time object detection system built with YOLOv8, OpenCV, and PyTorch, hosted interactively on Hugging Face Spaces[cite: 1].</p>
-            <div class="tech-pills">
-              <span>Python</span><span>YOLOv8</span><span>OpenCV</span><span>PyTorch</span>
-            </div>
-            <div class="project-footer">
-              <span class="hud-metric">⚡ Live Inference</span>
-              <span class="cta-link">Inspect Telemetry →</span>
-            </div>
-          </div>
+    <!-- Quick Search Box -->
+    <div class="project-search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="project-search-input" placeholder="Filter by tech (e.g. YOLO, Python)..." onkeyup="searchProjects()">
+    </div>
+  </div>
 
-          <div class="cyber-card project-card" data-category="automation" onclick="openTelemetryModal('AI-Powered Vehicle Data Scraper', 'Data Engineering / Selenium', 'Local Service / API', '99.4% Extraction Accuracy', '#', 'Built an automated web scraper to extract, clean, and structure vehicle data from multiple online sources for analysis.')">
-            <div class="card-header-flex">
-              <span class="card-tag">DATA AUTOMATION</span>
-              <span class="status-badge active">● ACTIVE</span>
-            </div>
-            <h3>AI-Powered Vehicle Data Scraper</h3>
-            <p class="project-desc">Automated web scraper built with Python, Selenium, and BeautifulSoup to extract and clean vehicle data[cite: 1].</p>
-            <div class="tech-pills">
-              <span>Python</span><span>Selenium</span><span>BeautifulSoup</span><span>APIs</span>
-            </div>
-            <div class="project-footer">
-              <span class="hud-metric">📊 Dynamic Extraction</span>
-              <span class="cta-link">Inspect Telemetry →</span>
-            </div>
-          </div>
+  <div class="projects-layout">
+    <div class="projects-grid" id="projects-grid">
 
-          <div class="cyber-card project-card" data-category="iot" onclick="openTelemetryModal('AI-Powered Smart Shopping Cart', 'Embedded Systems / Flask API', 'Hardware Unit / OpenFoodFacts', '45ms Barcode Latency', '#', 'Built an intelligent shopping assistant that scans barcodes and retrieves real-time nutritional information using the OpenFoodFacts API.')">
-            <div class="card-header-flex">
-              <span class="card-tag">EMBEDDED AI</span>
-              <span class="status-badge active">● ACTIVE</span>
-            </div>
-            <h3>AI-Powered Smart Shopping Cart</h3>
-            <p class="project-desc">Intelligent shopping assistant using Flask and hardware barcode scanners to fetch real-time nutritional metrics[cite: 1].</p>
-            <div class="tech-pills">
-              <span>Python</span><span>Flask</span><span>OpenFoodFacts</span><span>Hardware</span>
-            </div>
-            <div class="project-footer">
-              <span class="hud-metric">🛒 IoT Hardware Integration</span>
-              <span class="cta-link">Inspect Telemetry →</span>
-            </div>
-          </div>
-
-          <div class="cyber-card project-card" data-category="automation" onclick="openTelemetryModal('AI Operations Automation Platform', 'Generative AI / LLM Agents', 'Betterhood Operations', '< 10% RTO Rate', '#', 'Developed AI-powered automation workflows, resolved website issues, and optimized operations to reduce RTO below 10%.')">
-            <div class="card-header-flex">
-              <span class="card-tag">GENERATIVE AI</span>
-              <span class="status-badge live">● OPTIMIZED</span>
-            </div>
-            <h3>AI Operations Automation Platform</h3>
-            <p class="project-desc">Autonomous LLM workflow engine that reduced Return-to-Origin rates below 10% and increased client revenue[cite: 1].</p>
-            <div class="tech-pills">
-              <span>Python</span><span>LLMs</span><span>Workflow Automation</span>
-            </div>
-            <div class="project-footer">
-              <span class="hud-metric">📉 &lt; 10% RTO Rate</span>
-              <span class="cta-link">Inspect Telemetry →</span>
-            </div>
-          </div>
-
+      <div class="cyber-card project-card" data-category="vision" onclick="openTelemetryModal('YOLOv8 Real-Time Object Detection Engine', 'Computer Vision / PyTorch', 'Hugging Face Spaces', '120 FPS / TensorRT', 'https://huggingface.co/spaces', 'Developed a real-time object detection system using YOLOv8 and deployed it on Hugging Face Spaces for interactive inference.')">
+        <div class="card-header-flex">
+          <span class="card-tag">COMPUTER VISION</span>
+          <span class="status-badge live">● DEPLOYED</span>
+        </div>
+        <h3>YOLOv8 Real-Time Object Detection</h3>
+        <p class="project-desc">Real-time object detection system built with YOLOv8, OpenCV, and PyTorch, hosted interactively on Hugging Face Spaces.</p>
+        <div class="tech-pills">
+          <span>Python</span><span>YOLOv8</span><span>OpenCV</span><span>PyTorch</span>
+        </div>
+        <div class="project-footer">
+          <span class="hud-metric">⚡ Live Inference</span>
+          <span class="cta-link">Inspect Telemetry →</span>
         </div>
       </div>
 
-      <!-- Telemetry Modal -->
-      <div id="telemetry-modal" class="modal-overlay" onclick="closeTelemetryModal()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-          <button class="modal-close" onclick="closeTelemetryModal()">✕</button>
-          <div class="cyber-badge">SYSTEM TELEMETRY // DIAGNOSTIC</div>
-          <h2 id="tel-title" class="highlight" style="margin: 0.8rem 0;">PROJECT NAME</h2>
-          <p id="tel-desc" style="color: var(--text-sub); font-size: 0.95rem; margin-bottom: 1rem;">Overview...</p>
-          
-          <div class="telemetry-dashboard">
-            <div class="tel-box">
-              <span class="tel-label">ARCHITECTURE</span>
-              <span id="tel-arch" class="tel-value">--</span>
-            </div>
-            <div class="tel-box">
-              <span class="tel-label">HOST ENVIRONMENT</span>
-              <span id="tel-host" class="tel-value">--</span>
-            </div>
-            <div class="tel-box">
-              <span class="tel-label">BENCHMARK</span>
-              <span id="tel-speed" class="tel-value">--</span>
-            </div>
-          </div>
-
-          <div class="tel-log-container">
-            <div class="tel-log-title">LIVE EXECUTION STREAM</div>
-            <div id="tel-log-stream" class="tel-log-stream"></div>
-          </div>
-
-          <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
-            <a id="tel-link" href="#" target="_blank" class="cta-btn primary" style="text-decoration: none; text-align: center; display: inline-block;">🚀 Launch Live App</a>
-            <button class="cta-btn secondary" onclick="closeTelemetryModal()">Close Diagnostic</button>
-          </div>
+      <div class="cyber-card project-card" data-category="automation" onclick="openTelemetryModal('AI-Powered Vehicle Data Scraper', 'Data Engineering / Selenium', 'Local Service / API', '99.4% Extraction Accuracy', '#', 'Built an automated web scraper to extract, clean, and structure vehicle data from multiple online sources for analysis.')">
+        <div class="card-header-flex">
+          <span class="card-tag">DATA AUTOMATION</span>
+          <span class="status-badge active">● ACTIVE</span>
+        </div>
+        <h3>AI-Powered Vehicle Data Scraper</h3>
+        <p class="project-desc">Automated web scraper built with Python, Selenium, and BeautifulSoup to extract and clean vehicle data.</p>
+        <div class="tech-pills">
+          <span>Python</span><span>Selenium</span><span>BeautifulSoup</span><span>APIs</span>
+        </div>
+        <div class="project-footer">
+          <span class="hud-metric">📊 Dynamic Extraction</span>
+          <span class="cta-link">Inspect Telemetry →</span>
         </div>
       </div>
-    </section>
 
+      <div class="cyber-card project-card" data-category="iot" onclick="openTelemetryModal('AI-Powered Smart Shopping Cart', 'Embedded Systems / Flask API', 'Hardware Unit / OpenFoodFacts', '45ms Barcode Latency', '#', 'Built an intelligent shopping assistant that scans barcodes and retrieves real-time nutritional information using the OpenFoodFacts API.')">
+        <div class="card-header-flex">
+          <span class="card-tag">EMBEDDED AI</span>
+          <span class="status-badge active">● ACTIVE</span>
+        </div>
+        <h3>AI-Powered Smart Shopping Cart</h3>
+        <p class="project-desc">Intelligent shopping assistant using Flask and hardware barcode scanners to fetch real-time nutritional metrics.</p>
+        <div class="tech-pills">
+          <span>Python</span><span>Flask</span><span>OpenFoodFacts</span><span>Hardware</span>
+        </div>
+        <div class="project-footer">
+          <span class="hud-metric">🛒 IoT Hardware Integration</span>
+          <span class="cta-link">Inspect Telemetry →</span>
+        </div>
+      </div>
+
+      <div class="cyber-card project-card" data-category="automation" onclick="openTelemetryModal('AI Operations Automation Platform', 'Generative AI / LLM Agents', 'Betterhood Operations', '< 10% RTO Rate', '#', 'Developed AI-powered automation workflows, resolved website issues, and optimized operations to reduce RTO below 10%.')">
+        <div class="card-header-flex">
+          <span class="card-tag">GENERATIVE AI</span>
+          <span class="status-badge live">● OPTIMIZED</span>
+        </div>
+        <h3>AI Operations Automation Platform</h3>
+        <p class="project-desc">Autonomous LLM workflow engine that reduced Return-to-Origin rates below 10% and increased client revenue.</p>
+        <div class="tech-pills">
+          <span>Python</span><span>LLMs</span><span>Workflow Automation</span>
+        </div>
+        <div class="project-footer">
+          <span class="hud-metric">📉 &lt; 10% RTO Rate</span>
+          <span class="cta-link">Inspect Telemetry →</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Telemetry Modal -->
+  <div id="telemetry-modal" class="modal-overlay" onclick="closeTelemetryModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeTelemetryModal()">✕</button>
+      <div class="cyber-badge">SYSTEM TELEMETRY // DIAGNOSTIC</div>
+      <h2 id="tel-title" class="highlight" style="margin: 0.8rem 0;">PROJECT NAME</h2>
+      <p id="tel-desc" style="color: var(--text-sub); font-size: 0.95rem; margin-bottom: 1rem;">Overview...</p>
+      
+      <div class="telemetry-dashboard">
+        <div class="tel-box">
+          <span class="tel-label">ARCHITECTURE</span>
+          <span id="tel-arch" class="tel-value">--</span>
+        </div>
+        <div class="tel-box">
+          <span class="tel-label">HOST ENVIRONMENT</span>
+          <span id="tel-host" class="tel-value">--</span>
+        </div>
+        <div class="tel-box">
+          <span class="tel-label">BENCHMARK</span>
+          <span id="tel-speed" class="tel-value">--</span>
+        </div>
+      </div>
+
+      <div class="tel-log-container">
+        <div class="tel-log-title">LIVE EXECUTION STREAM</div>
+        <div id="tel-log-stream" class="tel-log-stream"></div>
+      </div>
+
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+        <a id="tel-link" href="#" target="_blank" class="cta-btn primary" style="text-decoration: none; text-align: center; display: inline-block;">🚀 Launch Live App</a>
+        <button class="cta-btn secondary" onclick="closeTelemetryModal()">Close Diagnostic</button>
+      </div>
+    </div>
+  </div>
+</section>
     <!-- Layer 4: Skills -->
     <section id="skills" class="layer">
       <h2 class="layer-title">TECHNICAL MATRIX // <span>SKILLS</span></h2>
@@ -341,5 +371,30 @@
   </main>
 
   <script src="script.js"></script>
-</body>
+
+
+
+<<!-- Cyber Command Palette Modal (Ctrl + K) -->
+<div id="cmd-palette" class="cmd-overlay" onclick="closeCmdPalette()">
+  <div class="cmd-box" onclick="event.stopPropagation()">
+    <div class="cmd-header">
+      <span class="cmd-badge">SAMITH-OS // COMMAND INTERFACE</span>
+      <span class="cmd-close" onclick="closeCmdPalette()">ESC ✕</span>
+    </div>
+    
+    <div class="cmd-input-wrapper">
+      <span class="cmd-prompt">></span>
+      <input type="text" id="cmd-input" placeholder="Type a command ('help', 'cat resume', 'run yolo', 'goto skills')..." autocomplete="off" spellcheck="false" onkeydown="handleCmdInput(event)">
+    </div>
+
+    <div class="cmd-output-container">
+      <div id="cmd-output" class="cmd-output">
+        <p class="cmd-hint">💡 Tip: Press <kbd>Ctrl</kbd> + <kbd>K</kbd> anywhere on the site to toggle this CLI.</p>
+        <p class="cmd-hint">Type <strong>help</strong> to list available operations.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+/body>
 </html>

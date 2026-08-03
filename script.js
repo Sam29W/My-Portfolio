@@ -177,3 +177,256 @@ function toggleExperienceDetail(cardElement) {
     if (icon) icon.textContent = '− COLLAPSE';
   }
 }
+
+
+// Command Palette Engine (Ctrl + K)
+// Safe Command Palette Engine (Ctrl + K)
+window.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    toggleCmdPalette();
+  } else if (e.key === 'Escape') {
+    closeCmdPalette();
+  }
+});
+
+function toggleCmdPalette() {
+  const cmdPalette = document.getElementById('cmd-palette');
+  if (!cmdPalette) return;
+
+  if (cmdPalette.classList.contains('active')) {
+    closeCmdPalette();
+  } else {
+    openCmdPalette();
+  }
+}
+
+function openCmdPalette() {
+  const cmdPalette = document.getElementById('cmd-palette');
+  const cmdInput = document.getElementById('cmd-input');
+  if (!cmdPalette) return;
+
+  cmdPalette.classList.add('active');
+  if (cmdInput) setTimeout(() => cmdInput.focus(), 50);
+}
+
+function closeCmdPalette() {
+  const cmdPalette = document.getElementById('cmd-palette');
+  if (cmdPalette) cmdPalette.classList.remove('active');
+}
+
+function handleCmdInput(e) {
+  if (e.key === 'Enter') {
+    const cmdInput = document.getElementById('cmd-input');
+    const cmdOutput = document.getElementById('cmd-output');
+    if (!cmdInput || !cmdOutput) return;
+
+    const rawVal = cmdInput.value.trim().toLowerCase();
+    cmdInput.value = '';
+    if (!rawVal) return;
+
+    let response = '';
+
+    if (rawVal === 'help') {
+      response = `
+        <div class="cmd-res">AVAILABLE SUBROUTINES:</div>
+        • <strong>cat resume</strong> : Dumps candidate JSON telemetry<br>
+        • <strong>run yolo</strong> : Simulates YOLOv8 vision pipeline<br>
+        • <strong>goto [hero|experience|projects|skills|education]</strong> : Navigate system layer<br>
+        • <strong>theme [dark|light]</strong> : Switch color theme<br>
+        • <strong>clear</strong> : Wipe CLI buffer
+      `;
+    } else if (rawVal === 'cat resume') {
+      response = `
+        <div class="cmd-res">{
+  "candidate": "Samith Shivakumar",
+  "role": "AI & ML Engineer",
+  "focus": ["Computer Vision", "LLM Agents", "Automation"],
+  "internships": 4,
+  "key_metric": "< 10% RTO Rate achieved @ Betterhood"
+}</div>`;
+    } else if (rawVal === 'run yolo') {
+      response = `
+        <div class="cmd-res">
+[0.00s] Loading TensorRT YOLOv8 weights...<br>
+[0.08s] Input stream initialized [1080p @ 60 FPS]<br>
+[0.15s] Bounding box inference active: 2 objects detected (Person: 98%, Laptop: 95%)
+        </div>`;
+    } else if (rawVal.startsWith('goto ')) {
+      const target = rawVal.split(' ')[1];
+      const validLayers = ['hero', 'experience', 'projects', 'skills', 'education'];
+      if (validLayers.includes(target)) {
+        switchLayer(target);
+        closeCmdPalette();
+        return;
+      } else {
+        response = `<span style="color: #ff4444;">Error: Invalid layer '${target}'. Try 'goto projects'.</span>`;
+      }
+    } else if (rawVal === 'theme dark') {
+      document.body.removeAttribute('data-theme');
+      document.getElementById('theme-icon').textContent = '⚡ DARK';
+      response = `<div class="cmd-res">Switched to DARK theme.</div>`;
+    } else if (rawVal === 'theme light') {
+      document.body.setAttribute('data-theme', 'light');
+      document.getElementById('theme-icon').textContent = '☀️ LIGHT';
+      response = `<div class="cmd-res">Switched to LIGHT theme.</div>`;
+    } else if (rawVal === 'clear') {
+      cmdOutput.innerHTML = '';
+      return;
+    } else {
+      response = `<span style="color: #ff4444;">Command not recognized: '${rawVal}'. Type 'help' for commands.</span>`;
+    }
+
+    cmdOutput.innerHTML += `<div style="margin-top: 0.8rem; border-top: 1px dashed var(--border); padding-top: 0.5rem;"><strong style="color:var(--accent);">> ${rawVal}</strong><br>${response}</div>`;
+    cmdOutput.scrollTop = cmdOutput.scrollHeight;
+  }
+}
+
+// Neural Optimizer Mini-Game Engine
+let trainInterval = null;
+
+function openGameModal() {
+  const modal = document.getElementById('game-modal');
+  if (modal) {
+    modal.classList.add('active');
+    resetGameCanvas();
+  }
+}
+
+function closeGameModal() {
+  const modal = document.getElementById('game-modal');
+  if (modal) modal.classList.remove('active');
+  if (trainInterval) clearInterval(trainInterval);
+}
+
+function updateGameParams() {
+  document.getElementById('lr-val').textContent = document.getElementById('param-lr').value;
+  document.getElementById('dr-val').textContent = document.getElementById('param-dr').value;
+  document.getElementById('bs-val').textContent = document.getElementById('param-bs').value;
+}
+
+function resetGameCanvas() {
+  const canvas = document.getElementById('neural-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = 'rgba(0, 240, 255, 0.15)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < canvas.width; x += 30) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+  }
+  for (let y = 0; y < canvas.height; y += 30) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+  }
+
+  document.getElementById('game-acc-display').textContent = "ACCURACY: 00.0%";
+  document.getElementById('game-loss-display').textContent = "LOSS: 1.000";
+}
+
+function runNeuralTraining() {
+  if (trainInterval) clearInterval(trainInterval);
+
+  const lr = parseFloat(document.getElementById('param-lr').value);
+  const dr = parseFloat(document.getElementById('param-dr').value);
+  const bs = parseInt(document.getElementById('param-bs').value);
+  
+  const canvas = document.getElementById('neural-canvas');
+  const ctx = canvas.getContext('2d');
+  resetGameCanvas();
+
+  const btn = document.getElementById('train-start-btn');
+  btn.disabled = true;
+  btn.textContent = "⏳ TRAINING IN PROGRESS...";
+
+  const banner = document.getElementById('game-results');
+  banner.style.color = "var(--accent)";
+  banner.textContent = "TRAINING NEURAL ENGINE... OBSERVING CONVERGENCE";
+
+  let epoch = 0;
+  const totalEpochs = 50;
+
+  // Ideal Parameters: LR ~ 0.005, DR ~ 0.20, BS ~ 32
+  const lrOptimal = 1 - Math.min(Math.abs(lr - 0.005) * 150, 0.9);
+  const drOptimal = 1 - Math.min(Math.abs(dr - 0.20) * 1.5, 0.8);
+  const bsOptimal = 1 - Math.min(Math.abs(bs - 32) / 64, 0.5);
+
+  const maxPossibleAcc = Math.min(99.4, (lrOptimal * 40 + drOptimal * 35 + bsOptimal * 25));
+
+  let currentAcc = 10;
+  let currentLoss = 2.5;
+
+  ctx.beginPath();
+  ctx.strokeStyle = "#00f0ff";
+  ctx.lineWidth = 2;
+  ctx.moveTo(0, canvas.height - 20);
+
+  trainInterval = setInterval(() => {
+    epoch++;
+    const progress = epoch / totalEpochs;
+    
+    // Simulate learning curve with noise
+    const noise = (Math.random() - 0.5) * (1 - progress) * 10;
+    currentAcc = Math.min(99.9, Math.max(5, (progress * maxPossibleAcc) + noise));
+    currentLoss = Math.max(0.01, (2.5 * (1 - progress)) + (Math.random() * 0.1));
+
+    document.getElementById('game-acc-display').textContent = `ACCURACY: ${currentAcc.toFixed(1)}%`;
+    document.getElementById('game-loss-display').textContent = `LOSS: ${currentLoss.toFixed(3)}`;
+
+    // Plot graph on canvas
+    const x = (epoch / totalEpochs) * canvas.width;
+    const y = canvas.height - ((currentAcc / 100) * (canvas.height - 30));
+    ctx.lineTo(x, y);
+    ctx.stroke();
+
+    if (epoch >= totalEpochs) {
+      clearInterval(trainInterval);
+      btn.disabled = false;
+      btn.textContent = "⚡ RE-RUN TRAINING";
+
+      if (currentAcc >= 98.5) {
+        banner.style.color = "#00ff88";
+        banner.innerHTML = `🎉 <strong>MODEL CONVERGED!</strong> Final Accuracy: <strong>${currentAcc.toFixed(1)}%</strong>. Hyperparameters Optimized!`;
+      } else {
+        banner.style.color = "#ff4444";
+        banner.innerHTML = `⚠️ <strong>SUB-OPTIMAL ACCURACY (${currentAcc.toFixed(1)}%)</strong>. Adjust Learning Rate (~0.005) or Dropout (~0.20) & Retry!`;
+      }
+    }
+  }, 40);
+}
+// Enhanced Project Filter with Counter
+function filterProjects(category, evt) {
+  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+  if (evt && evt.target) evt.target.classList.add('active');
+
+  const searchVal = document.getElementById('project-search-input')?.value.toLowerCase() || '';
+  const cards = document.querySelectorAll('.project-card');
+  let visibleCount = 0;
+
+  cards.forEach(card => {
+    const cardCat = card.getAttribute('data-category');
+    const cardText = card.innerText.toLowerCase();
+    
+    const matchesCategory = (category === 'all' || cardCat === category);
+    const matchesSearch = cardText.includes(searchVal);
+
+    if (matchesCategory && matchesSearch) {
+      card.style.display = 'flex';
+      visibleCount++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  const displayCounter = document.getElementById('project-count-display');
+  if (displayCounter) {
+    displayCounter.textContent = `${visibleCount} ACTIVE`;
+  }
+}
+
+// Quick Search Handler
+function searchProjects() {
+  const activeBtn = document.querySelector('.filter-btn.active');
+  const activeCategory = activeBtn ? activeBtn.getAttribute('onclick').match(/'([^']+)'/)[1] : 'all';
+  filterProjects(activeCategory, null);
+}
