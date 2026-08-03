@@ -430,3 +430,81 @@ function searchProjects() {
   const activeCategory = activeBtn ? activeBtn.getAttribute('onclick').match(/'([^']+)'/)[1] : 'all';
   filterProjects(activeCategory, null);
 }
+// Live Cyberpunk Clock Telemetry Engine
+function startCyberClock() {
+  const clockEl = document.getElementById('cyber-clock');
+  if (!clockEl) return;
+
+  function updateTime() {
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    hours = hours % 12;
+    hours = hours ? hours : 12; // convert 0 to 12
+    const hoursStr = String(hours).padStart(2, '0');
+
+    clockEl.textContent = `${hoursStr}:${minutes}:${seconds} ${ampm}`;
+  }
+
+  updateTime();
+  setInterval(updateTime, 1000);
+}
+
+// Auto-start clock when page loads
+document.addEventListener('DOMContentLoaded', startCyberClock);
+// Futuristic Physics-Based Cursor Tracking
+function initCyberCursor() {
+  const dot = document.getElementById('cursor-dot');
+  const ring = document.getElementById('cursor-ring');
+  if (!dot || !ring) return;
+
+  let mouseX = -100, mouseY = -100;
+  let ringX = -100, ringY = -100;
+
+  // Track Mouse Position
+  window.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+
+    // Instant position for central dot
+    dot.style.left = `${mouseX}px`;
+    dot.style.top = `${mouseY}px`;
+  });
+
+  // Smooth lerp (linear interpolation) animation loop for outer ring
+  function renderCursor() {
+    ringX += (mouseX - ringX) * 0.15; // Smooth delay speed
+    ringY += (mouseY - ringY) * 0.15;
+
+    ring.style.left = `${ringX}px`;
+    ring.style.top = `${ringY}px`;
+
+    requestAnimationFrame(renderCursor);
+  }
+  renderCursor();
+
+  // Click Feedback
+  window.addEventListener('mousedown', () => ring.classList.add('active'));
+  window.addEventListener('mouseup', () => ring.classList.remove('active'));
+
+  // Target-Lock Hover Detection for Buttons, Links & Cards
+  const interactiveSelector = 'a, button, .project-card, .nav-btn, .contact-pill, input, textarea, .avatar-container';
+  
+  document.addEventListener('mouseover', (e) => {
+    if (e.target.closest(interactiveSelector)) {
+      ring.classList.add('hovered');
+    }
+  });
+
+  document.addEventListener('mouseout', (e) => {
+    if (e.target.closest(interactiveSelector)) {
+      ring.classList.remove('hovered');
+    }
+  });
+}
+
+// Initialize on DOM load
+document.addEventListener('DOMContentLoaded', initCyberCursor);

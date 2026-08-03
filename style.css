@@ -748,3 +748,122 @@ kbd {
 .project-search-box input::placeholder {
   color: var(--text-sub);
 }
+/* Futuristic Cyber Clock Widget Styling */
+.cyber-clock-widget {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--card-bg, rgba(15, 17, 23, 0.8));
+  border: 1px solid var(--border, rgba(0, 240, 255, 0.2));
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-family: 'Orbitron', monospace;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
+  backdrop-filter: blur(6px);
+}
+
+.clock-status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.65rem;
+  color: var(--text-sub, #8a99ad);
+  letter-spacing: 1px;
+}
+
+.clock-pulse {
+  width: 6px;
+  height: 6px;
+  background-color: #00ff88;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #00ff88;
+  animation: pulseGlow 1.8s infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.85); }
+}
+
+.clock-time {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent, #00f0ff);
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 8px var(--accent-glow, rgba(0, 240, 255, 0.4));
+}
+
+@media (max-width: 600px) {
+  .cyber-clock-widget {
+    padding: 0.2rem 0.5rem;
+  }
+  .clock-time {
+    font-size: 0.8rem;
+  }
+}
+/* Custom Cyberpunk Cursor */
+body {
+  cursor: none; /* Hide default browser arrow */
+}
+
+/* Force hide cursor on interactive elements as well */
+a, button, input, textarea, select, [role="button"] {
+  cursor: none !important;
+}
+
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent, #00f0ff);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.15s ease-in-out, transform 0.1s ease;
+  box-shadow: 0 0 10px var(--accent, #00f0ff);
+}
+
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--accent, #00f0ff);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease, height 0.2s ease, border-radius 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  box-shadow: 0 0 12px var(--accent-glow, rgba(0, 240, 255, 0.3));
+}
+
+/* Hover State over interactive elements (Target Lock Reticle) */
+.cursor-ring.hovered {
+  width: 48px;
+  height: 48px;
+  background: rgba(0, 240, 255, 0.08);
+  border-color: #00ff88; /* Green target lock glow */
+  border-dasharray: 4;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+}
+
+/* Click / Active State */
+.cursor-ring.active {
+  transform: translate(-50%, -50%) scale(0.7);
+  border-color: #ff0055;
+}
+
+/* Disable custom cursor on mobile touch devices automatically */
+@media (max-width: 768px), (pointer: coarse) {
+  body, a, button, input {
+    cursor: auto !important;
+  }
+  .cursor-dot, .cursor-ring {
+    display: none !important;
+  }
+}

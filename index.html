@@ -8,27 +8,42 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Cyberpunk Custom Cursor Overlay -->
+<div id="cursor-dot" class="cursor-dot"></div>
+<div id="cursor-ring" class="cursor-ring"></div>
 
   <!-- Particle Canvas -->
   <canvas id="particle-canvas"></canvas>
 
   <!-- Navbar -->
-  <nav class="navbar">
-    <button class="nav-btn cmd-trigger-btn" onclick="openCmdPalette()">
-  <span>[ ⌘ / CTRL + K ]</span>
-</button>
-    <div class="logo">SAMITH // OS</div>
-    <div class="nav-links">
-      <button class="nav-btn active" onclick="switchLayer('hero', event)">Core</button>
-      <button class="nav-btn" onclick="switchLayer('experience', event)">Experience</button>
-      <button class="nav-btn" onclick="switchLayer('projects', event)">Projects</button>
-      <button class="nav-btn" onclick="switchLayer('skills', event)">Skills</button>
-      <button class="nav-btn" onclick="switchLayer('education', event)">Education</button>
+ <nav class="navbar">
+  <button class="nav-btn cmd-trigger-btn" onclick="openCmdPalette()">
+    <span>[ ⌘ / CTRL + K ]</span>
+  </button>
+  
+  <div class="logo">SAMITH // OS</div>
+  
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="switchLayer('hero', event)">Core</button>
+    <button class="nav-btn" onclick="switchLayer('experience', event)">Experience</button>
+    <button class="nav-btn" onclick="switchLayer('projects', event)">Projects</button>
+    <button class="nav-btn" onclick="switchLayer('skills', event)">Skills</button>
+    <button class="nav-btn" onclick="switchLayer('education', event)">Education</button>
+  </div>
+
+  <!-- Cyber Digital Clock Widget (Placed inside navbar) -->
+  <div class="cyber-clock-widget">
+    <div class="clock-status">
+      <span class="clock-pulse"></span>
+      <span class="clock-tz">IST [UTC+5:30]</span>
     </div>
-    <button id="theme-toggle" class="theme-btn">
-      <span id="theme-icon">⚡ DARK</span>
-    </button>
-  </nav>
+    <div id="cyber-clock" class="clock-time">00:00:00 AM</div>
+  </div>
+
+  <button id="theme-toggle" class="theme-btn">
+    <span id="theme-icon">⚡ DARK</span>
+  </button>
+</nav>
 
   <!-- Main Content Container -->
   <main class="content-container">
