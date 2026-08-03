@@ -41,30 +41,54 @@ function handlePhotoUpload(event) {
 const themeToggleBtn = document.getElementById('theme-toggle');
 const themeIcon = document.getElementById('theme-icon');
 
-themeToggleBtn.addEventListener('click', () => {
-  const currentTheme = document.body.getAttribute('data-theme');
-  if (currentTheme === 'light') {
-    document.body.removeAttribute('data-theme');
-    themeIcon.textContent = '⚡ DARK';
-  } else {
-    document.body.setAttribute('data-theme', 'light');
-    themeIcon.textContent = '☀️ LIGHT';
-  }
-});
+if (themeToggleBtn) {
+  themeToggleBtn.addEventListener('click', () => {
+    const currentTheme = document.body.getAttribute('data-theme');
+    if (currentTheme === 'light') {
+      document.body.removeAttribute('data-theme');
+      if (themeIcon) themeIcon.textContent = '⚡ DARK';
+    } else {
+      document.body.setAttribute('data-theme', 'light');
+      if (themeIcon) themeIcon.textContent = '☀️ LIGHT';
+    }
+  });
+}
 
-// 4. Project Filter
+// 4. Project Filter & Counter
 function filterProjects(category, evt) {
   document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
   if (evt && evt.target) evt.target.classList.add('active');
 
+  const searchVal = document.getElementById('project-search-input')?.value.toLowerCase() || '';
   const cards = document.querySelectorAll('.project-card');
+  let visibleCount = 0;
+
   cards.forEach(card => {
-    if (category === 'all' || card.getAttribute('data-category') === category) {
+    const cardCat = card.getAttribute('data-category');
+    const cardText = card.innerText.toLowerCase();
+    
+    const matchesCategory = (category === 'all' || cardCat === category);
+    const matchesSearch = cardText.includes(searchVal);
+
+    if (matchesCategory && matchesSearch) {
       card.style.display = 'flex';
+      visibleCount++;
     } else {
       card.style.display = 'none';
     }
   });
+
+  const displayCounter = document.getElementById('project-count-display');
+  if (displayCounter) {
+    displayCounter.textContent = `${visibleCount} ACTIVE`;
+  }
+}
+
+// Quick Search Handler for Projects
+function searchProjects() {
+  const activeBtn = document.querySelector('.filter-btn.active');
+  const activeCategory = activeBtn ? activeBtn.getAttribute('onclick').match(/'([^']+)'/)[1] : 'all';
+  filterProjects(activeCategory, null);
 }
 
 // 5. Telemetry Modal Engine
@@ -117,54 +141,118 @@ function closeTelemetryModal() {
   clearInterval(logInterval);
 }
 
-// 6. Particle Physics Background
+// 6. Interactive Neural Constellation Physics Background
 const canvas = document.getElementById('particle-canvas');
-const ctx = canvas.getContext('2d');
+if (canvas) {
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let mouse = { x: null, y: null, radius: 140 };
 
-let particles = [];
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-class Particle {
-  constructor() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
-    this.vx = (Math.random() - 0.5) * 0.8;
-    this.vy = (Math.random() - 0.5) * 0.8;
-    this.size = 2;
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
   }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
 
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
-    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-  }
-
-  draw() {
-    ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--accent');
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
-
-for (let i = 0; i < 50; i++) particles.push(new Particle());
-
-function animateParticles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles.forEach(p => {
-    p.update();
-    p.draw();
+  window.addEventListener('mousemove', (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
   });
-  requestAnimationFrame(animateParticles);
+
+  window.addEventListener('mouseleave', () => {
+    mouse.x = null;
+    mouse.y = null;
+  });
+
+  class NeuralNode {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.vx = (Math.random() - 0.5) * 0.7;
+      this.vy = (Math.random() - 0.5) * 0.7;
+      this.size = Math.random() * 1.5 + 1.5;
+    }
+
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+
+      if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+      if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+      if (mouse.x !== null && mouse.y !== null) {
+        let dx = mouse.x - this.x;
+        let dy = mouse.y - this.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < mouse.radius) {
+          let force = (mouse.radius - dist) / mouse.radius;
+          this.x -= (dx / dist) * force * 2;
+          this.y -= (dy / dist) * force * 2;
+        }
+      }
+    }
+
+    draw(accentColor) {
+      ctx.fillStyle = accentColor;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 65; i++) {
+    particles.push(new NeuralNode());
+  }
+
+  function animateConstellation() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const accentColor = getComputedStyle(document.body).getPropertyValue('--accent').trim() || '#00f0ff';
+
+    for (let a = 0; a < particles.length; a++) {
+      particles[a].update();
+      particles[a].draw(accentColor);
+
+      for (let b = a + 1; b < particles.length; b++) {
+        let dx = particles[a].x - particles[b].x;
+        let dy = particles[a].y - particles[b].y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 110) {
+          let opacity = 1 - (dist / 110);
+          ctx.strokeStyle = `rgba(0, 240, 255, ${opacity * 0.25})`;
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(particles[a].x, particles[a].y);
+          ctx.lineTo(particles[b].x, particles[b].y);
+          ctx.stroke();
+        }
+      }
+
+      if (mouse.x !== null && mouse.y !== null) {
+        let mdx = particles[a].x - mouse.x;
+        let mdy = particles[a].y - mouse.y;
+        let mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+
+        if (mdist < mouse.radius) {
+          let opacity = 1 - (mdist / mouse.radius);
+          ctx.strokeStyle = `rgba(0, 240, 255, ${opacity * 0.5})`;
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(particles[a].x, particles[a].y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    requestAnimationFrame(animateConstellation);
+  }
+  animateConstellation();
 }
-animateParticles();
-// Toggle Expandable Experience Details
+
+// 7. Toggle Expandable Experience Details
 function toggleExperienceDetail(cardElement) {
   const isOpen = cardElement.classList.contains('open');
   const icon = cardElement.querySelector('.expand-icon');
@@ -178,9 +266,7 @@ function toggleExperienceDetail(cardElement) {
   }
 }
 
-
-// Command Palette Engine (Ctrl + K)
-// Safe Command Palette Engine (Ctrl + K)
+// 8. Safe Command Palette Engine (Ctrl + K)
 window.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
     e.preventDefault();
@@ -264,11 +350,11 @@ function handleCmdInput(e) {
       }
     } else if (rawVal === 'theme dark') {
       document.body.removeAttribute('data-theme');
-      document.getElementById('theme-icon').textContent = '⚡ DARK';
+      if (document.getElementById('theme-icon')) document.getElementById('theme-icon').textContent = '⚡ DARK';
       response = `<div class="cmd-res">Switched to DARK theme.</div>`;
     } else if (rawVal === 'theme light') {
       document.body.setAttribute('data-theme', 'light');
-      document.getElementById('theme-icon').textContent = '☀️ LIGHT';
+      if (document.getElementById('theme-icon')) document.getElementById('theme-icon').textContent = '☀️ LIGHT';
       response = `<div class="cmd-res">Switched to LIGHT theme.</div>`;
     } else if (rawVal === 'clear') {
       cmdOutput.innerHTML = '';
@@ -282,7 +368,7 @@ function handleCmdInput(e) {
   }
 }
 
-// Neural Optimizer Mini-Game Engine
+// 9. Neural Optimizer Mini-Game Engine
 let trainInterval = null;
 
 function openGameModal() {
@@ -300,9 +386,13 @@ function closeGameModal() {
 }
 
 function updateGameParams() {
-  document.getElementById('lr-val').textContent = document.getElementById('param-lr').value;
-  document.getElementById('dr-val').textContent = document.getElementById('param-dr').value;
-  document.getElementById('bs-val').textContent = document.getElementById('param-bs').value;
+  const lrEl = document.getElementById('lr-val');
+  const drEl = document.getElementById('dr-val');
+  const bsEl = document.getElementById('bs-val');
+
+  if (lrEl) lrEl.textContent = document.getElementById('param-lr').value;
+  if (drEl) drEl.textContent = document.getElementById('param-dr').value;
+  if (bsEl) bsEl.textContent = document.getElementById('param-bs').value;
 }
 
 function resetGameCanvas() {
@@ -320,8 +410,10 @@ function resetGameCanvas() {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
   }
 
-  document.getElementById('game-acc-display').textContent = "ACCURACY: 00.0%";
-  document.getElementById('game-loss-display').textContent = "LOSS: 1.000";
+  const accDisp = document.getElementById('game-acc-display');
+  const lossDisp = document.getElementById('game-loss-display');
+  if (accDisp) accDisp.textContent = "ACCURACY: 00.0%";
+  if (lossDisp) lossDisp.textContent = "LOSS: 1.000";
 }
 
 function runNeuralTraining() {
@@ -332,21 +424,25 @@ function runNeuralTraining() {
   const bs = parseInt(document.getElementById('param-bs').value);
   
   const canvas = document.getElementById('neural-canvas');
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
   resetGameCanvas();
 
   const btn = document.getElementById('train-start-btn');
-  btn.disabled = true;
-  btn.textContent = "⏳ TRAINING IN PROGRESS...";
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "⏳ TRAINING IN PROGRESS...";
+  }
 
   const banner = document.getElementById('game-results');
-  banner.style.color = "var(--accent)";
-  banner.textContent = "TRAINING NEURAL ENGINE... OBSERVING CONVERGENCE";
+  if (banner) {
+    banner.style.color = "var(--accent)";
+    banner.textContent = "TRAINING NEURAL ENGINE... OBSERVING CONVERGENCE";
+  }
 
   let epoch = 0;
   const totalEpochs = 50;
 
-  // Ideal Parameters: LR ~ 0.005, DR ~ 0.20, BS ~ 32
   const lrOptimal = 1 - Math.min(Math.abs(lr - 0.005) * 150, 0.9);
   const drOptimal = 1 - Math.min(Math.abs(dr - 0.20) * 1.5, 0.8);
   const bsOptimal = 1 - Math.min(Math.abs(bs - 32) / 64, 0.5);
@@ -365,15 +461,15 @@ function runNeuralTraining() {
     epoch++;
     const progress = epoch / totalEpochs;
     
-    // Simulate learning curve with noise
     const noise = (Math.random() - 0.5) * (1 - progress) * 10;
     currentAcc = Math.min(99.9, Math.max(5, (progress * maxPossibleAcc) + noise));
     currentLoss = Math.max(0.01, (2.5 * (1 - progress)) + (Math.random() * 0.1));
 
-    document.getElementById('game-acc-display').textContent = `ACCURACY: ${currentAcc.toFixed(1)}%`;
-    document.getElementById('game-loss-display').textContent = `LOSS: ${currentLoss.toFixed(3)}`;
+    const accDisp = document.getElementById('game-acc-display');
+    const lossDisp = document.getElementById('game-loss-display');
+    if (accDisp) accDisp.textContent = `ACCURACY: ${currentAcc.toFixed(1)}%`;
+    if (lossDisp) lossDisp.textContent = `LOSS: ${currentLoss.toFixed(3)}`;
 
-    // Plot graph on canvas
     const x = (epoch / totalEpochs) * canvas.width;
     const y = canvas.height - ((currentAcc / 100) * (canvas.height - 30));
     ctx.lineTo(x, y);
@@ -381,56 +477,25 @@ function runNeuralTraining() {
 
     if (epoch >= totalEpochs) {
       clearInterval(trainInterval);
-      btn.disabled = false;
-      btn.textContent = "⚡ RE-RUN TRAINING";
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "⚡ RE-RUN TRAINING";
+      }
 
-      if (currentAcc >= 98.5) {
-        banner.style.color = "#00ff88";
-        banner.innerHTML = `🎉 <strong>MODEL CONVERGED!</strong> Final Accuracy: <strong>${currentAcc.toFixed(1)}%</strong>. Hyperparameters Optimized!`;
-      } else {
-        banner.style.color = "#ff4444";
-        banner.innerHTML = `⚠️ <strong>SUB-OPTIMAL ACCURACY (${currentAcc.toFixed(1)}%)</strong>. Adjust Learning Rate (~0.005) or Dropout (~0.20) & Retry!`;
+      if (banner) {
+        if (currentAcc >= 98.5) {
+          banner.style.color = "#00ff88";
+          banner.innerHTML = `🎉 <strong>MODEL CONVERGED!</strong> Final Accuracy: <strong>${currentAcc.toFixed(1)}%</strong>. Hyperparameters Optimized!`;
+        } else {
+          banner.style.color = "#ff4444";
+          banner.innerHTML = `⚠️ <strong>SUB-OPTIMAL ACCURACY (${currentAcc.toFixed(1)}%)</strong>. Adjust Learning Rate (~0.005) or Dropout (~0.20) & Retry!`;
+        }
       }
     }
   }, 40);
 }
-// Enhanced Project Filter with Counter
-function filterProjects(category, evt) {
-  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-  if (evt && evt.target) evt.target.classList.add('active');
 
-  const searchVal = document.getElementById('project-search-input')?.value.toLowerCase() || '';
-  const cards = document.querySelectorAll('.project-card');
-  let visibleCount = 0;
-
-  cards.forEach(card => {
-    const cardCat = card.getAttribute('data-category');
-    const cardText = card.innerText.toLowerCase();
-    
-    const matchesCategory = (category === 'all' || cardCat === category);
-    const matchesSearch = cardText.includes(searchVal);
-
-    if (matchesCategory && matchesSearch) {
-      card.style.display = 'flex';
-      visibleCount++;
-    } else {
-      card.style.display = 'none';
-    }
-  });
-
-  const displayCounter = document.getElementById('project-count-display');
-  if (displayCounter) {
-    displayCounter.textContent = `${visibleCount} ACTIVE`;
-  }
-}
-
-// Quick Search Handler
-function searchProjects() {
-  const activeBtn = document.querySelector('.filter-btn.active');
-  const activeCategory = activeBtn ? activeBtn.getAttribute('onclick').match(/'([^']+)'/)[1] : 'all';
-  filterProjects(activeCategory, null);
-}
-// Live Cyberpunk Clock Telemetry Engine
+// 10. Live Cyberpunk Clock Telemetry Engine
 function startCyberClock() {
   const clockEl = document.getElementById('cyber-clock');
   if (!clockEl) return;
@@ -443,7 +508,7 @@ function startCyberClock() {
     const ampm = hours >= 12 ? 'PM' : 'AM';
 
     hours = hours % 12;
-    hours = hours ? hours : 12; // convert 0 to 12
+    hours = hours ? hours : 12;
     const hoursStr = String(hours).padStart(2, '0');
 
     clockEl.textContent = `${hoursStr}:${minutes}:${seconds} ${ampm}`;
@@ -453,9 +518,7 @@ function startCyberClock() {
   setInterval(updateTime, 1000);
 }
 
-// Auto-start clock when page loads
-document.addEventListener('DOMContentLoaded', startCyberClock);
-// Futuristic Physics-Based Cursor Tracking
+// 11. Futuristic Physics-Based Cursor Tracking
 function initCyberCursor() {
   const dot = document.getElementById('cursor-dot');
   const ring = document.getElementById('cursor-ring');
@@ -464,19 +527,16 @@ function initCyberCursor() {
   let mouseX = -100, mouseY = -100;
   let ringX = -100, ringY = -100;
 
-  // Track Mouse Position
   window.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
 
-    // Instant position for central dot
     dot.style.left = `${mouseX}px`;
     dot.style.top = `${mouseY}px`;
   });
 
-  // Smooth lerp (linear interpolation) animation loop for outer ring
   function renderCursor() {
-    ringX += (mouseX - ringX) * 0.15; // Smooth delay speed
+    ringX += (mouseX - ringX) * 0.15;
     ringY += (mouseY - ringY) * 0.15;
 
     ring.style.left = `${ringX}px`;
@@ -486,11 +546,9 @@ function initCyberCursor() {
   }
   renderCursor();
 
-  // Click Feedback
   window.addEventListener('mousedown', () => ring.classList.add('active'));
   window.addEventListener('mouseup', () => ring.classList.remove('active'));
 
-  // Target-Lock Hover Detection for Buttons, Links & Cards
   const interactiveSelector = 'a, button, .project-card, .nav-btn, .contact-pill, input, textarea, .avatar-container';
   
   document.addEventListener('mouseover', (e) => {
@@ -506,14 +564,10 @@ function initCyberCursor() {
   });
 }
 
-// Initialize on DOM load
-document.addEventListener('DOMContentLoaded', initCyberCursor);
-// Web Audio API Synthesizer Engine (Zero-load audio generation)
-// Web Audio API Synthesizer Engine (Browser-Autoplay Compliant)
+// 12. Web Audio API Synthesizer Engine (Browser-Autoplay Compliant)
 let audioCtx = null;
 let sfxEnabled = true;
 
-// Initialize or resume AudioContext safely on user interaction
 function getAudioContext() {
   if (!audioCtx) {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -528,9 +582,7 @@ function getAudioContext() {
 }
 
 function toggleSFX() {
-  // Ensure AudioContext is active on button press
-  const ctx = getAudioContext();
-  
+  getAudioContext();
   sfxEnabled = !sfxEnabled;
   const icon = document.getElementById('sfx-icon');
   const btn = document.getElementById('sfx-toggle');
@@ -545,12 +597,11 @@ function toggleSFX() {
   }
 }
 
-// Play synthetic cyber sound effects
 function playSFX(type) {
   if (!sfxEnabled) return;
   
   const ctx = getAudioContext();
-  if (!ctx || ctx.state !== 'running') return; // Don't attempt if still suspended
+  if (!ctx || ctx.state !== 'running') return;
 
   try {
     const osc = ctx.createOscillator();
@@ -561,7 +612,6 @@ function playSFX(type) {
     const now = ctx.currentTime;
 
     if (type === 'hover') {
-      // High-pitched cyber blip
       osc.type = 'sine';
       osc.frequency.setValueAtTime(900, now);
       osc.frequency.exponentialRampToValueAtTime(1400, now + 0.05);
@@ -570,7 +620,6 @@ function playSFX(type) {
       osc.start(now);
       osc.stop(now + 0.05);
     } else if (type === 'click') {
-      // Crisp mechanical UI tick
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(500, now);
       osc.frequency.exponentialRampToValueAtTime(150, now + 0.08);
@@ -579,10 +628,9 @@ function playSFX(type) {
       osc.start(now);
       osc.stop(now + 0.08);
     } else if (type === 'success') {
-      // Dual chime for toggle ON
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(523.25, now); // C5
-      osc.frequency.setValueAtTime(659.25, now + 0.06); // E5
+      osc.frequency.setValueAtTime(523.25, now);
+      osc.frequency.setValueAtTime(659.25, now + 0.06);
       gain.gain.setValueAtTime(0.06, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
       osc.start(now);
@@ -593,15 +641,72 @@ function playSFX(type) {
   }
 }
 
-// Unlock audio context on ANY first click on the page
-window.addEventListener('click', () => {
-  if (audioCtx && audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
-}, { once: true });
+// 13. Matrix Cyber-Terminal Title & Favicon Engine
+(function initTabPresenceEngine() {
+  const originalTitle = document.title || "Samith Shivakumar // AI & ML Engineer";
+  let titleInterval = null;
 
-// UI Event Listeners for Hover and Click SFX
+  const faviconCanvas = document.createElement('canvas');
+  faviconCanvas.width = 32;
+  faviconCanvas.height = 32;
+  const fCtx = faviconCanvas.getContext('2d');
+
+  function updateFavicon(color) {
+    fCtx.clearRect(0, 0, 32, 32);
+    fCtx.fillStyle = color;
+    fCtx.beginPath();
+    fCtx.arc(16, 16, 10, 0, Math.PI * 2);
+    fCtx.fill();
+    
+    fCtx.strokeStyle = color;
+    fCtx.lineWidth = 2;
+    fCtx.beginPath();
+    fCtx.arc(16, 16, 14, 0, Math.PI * 2);
+    fCtx.stroke();
+
+    let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    link.type = 'image/x-icon';
+    link.rel = 'shortcut icon';
+    link.href = faviconCanvas.toDataURL("image/x-icon");
+    document.getElementsByTagName('head')[0].appendChild(link);
+  }
+
+  updateFavicon("#00f0ff");
+
+  window.addEventListener('blur', () => {
+    updateFavicon("#ff0055");
+    let isStepOne = true;
+    titleInterval = setInterval(() => {
+      document.title = isStepOne 
+        ? "⚠️ SYSTEM STANDBY // SAMITH-OS" 
+        : "⚡ 1 UNREAD TELEMETRY LOG";
+      isStepOne = !isStepOne;
+    }, 1500);
+  });
+
+  window.addEventListener('focus', () => {
+    if (titleInterval) clearInterval(titleInterval);
+    updateFavicon("#00ff88");
+    document.title = "🟢 SYSTEM ONLINE // SAMITH SHIVAKUMAR";
+
+    setTimeout(() => {
+      document.title = originalTitle;
+      updateFavicon("#00f0ff");
+    }, 3000);
+  });
+})();
+
+// DOM Content Loaded Listener
 document.addEventListener('DOMContentLoaded', () => {
+  startCyberClock();
+  initCyberCursor();
+
+  window.addEventListener('click', () => {
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }, { once: true });
+
   const interactiveSelector = '.nav-btn, .project-card, .cta-btn, .filter-btn, .theme-btn, .contact-pill, .sfx-btn';
   
   document.addEventListener('mouseover', (e) => {
